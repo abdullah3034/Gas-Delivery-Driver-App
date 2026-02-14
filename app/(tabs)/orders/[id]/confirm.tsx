@@ -16,7 +16,7 @@ export default function ConfirmDeliveryScreen() {
   const db = useSQLiteContext();
   const { order, items } = useOrderDetail(Number.isFinite(orderId) ? orderId : null);
   const { inventory } = useInventory(order?.vehicle_id ?? null);
-  const [deliveredBy, setDeliveredBy] = useState('Driver 01');
+  const [deliveredBy, setDeliveredBy] = useState('');
   const [notes, setNotes] = useState('');
   const [errors, setErrors] = useState<string | null>(null);
   const [deliveredMap, setDeliveredMap] = useState<Record<number, string>>({});
@@ -134,7 +134,13 @@ export default function ConfirmDeliveryScreen() {
 
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>Delivered By</Text>
-        <TextInput style={styles.input} value={deliveredBy} onChangeText={setDeliveredBy} />
+        <TextInput
+          style={styles.input}
+          value={deliveredBy}
+          onChangeText={setDeliveredBy}
+          placeholder="Name"
+          placeholderTextColor={Design.colors.muted}
+        />
       </View>
 
       <View style={styles.card}>

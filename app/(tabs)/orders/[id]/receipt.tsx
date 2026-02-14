@@ -23,7 +23,7 @@ export default function ReceiptScreen() {
   const amountReceived = payment?.amount_received ?? amountPaid;
   const changeGiven = payment?.change_given ?? 0;
   const [deliveryHistory, setDeliveryHistory] = useState<
-    { id: number; delivered_at: string; amount: number }[]
+    { id: number; delivered_at: string; amount: number; delivered_by: string; notes?: string | null }[]
   >([]);
   const [deliveryItems, setDeliveryItems] = useState<
     { delivery_id: number; product_name: string; qty_delivered: number; price_per_unit: number }[]
@@ -45,8 +45,8 @@ export default function ReceiptScreen() {
   useEffect(() => {
     if (!order) return;
     Promise.all([
-      db.getAllAsync<{ id: number; delivered_at: string; amount: number }>(
-        'SELECT id, delivered_at, amount FROM deliveries WHERE order_id = ? ORDER BY id ASC',
+      db.getAllAsync<{ id: number; delivered_at: string; amount: number; delivered_by: string; notes?: string | null }>(
+        'SELECT id, delivered_at, amount, delivered_by, notes FROM deliveries WHERE order_id = ? ORDER BY id ASC',
         [order.id]
       ),
       db.getAllAsync<{ delivery_id: number; product_name: string; qty_delivered: number; price_per_unit: number }>(
@@ -102,6 +102,9 @@ export default function ReceiptScreen() {
           Date: {receipt?.created_at ? new Date(receipt.created_at).toLocaleString() : ''}
         </Text>
         <Text style={styles.receiptMeta}>Vehicle: {vehicle ? `${vehicle.name} (${vehicle.plate})` : 'N/A'}</Text>
+        {deliveryHistory.length <= 1 && deliveryHistory[0]?.delivered_by ? (
+          <Text style={styles.receiptMeta}>Delivered By: {deliveryHistory[0].delivered_by}</Text>
+        ) : null}
 
         <View style={styles.receiptSection}>
           <Text style={styles.receiptSectionTitle}>Customer</Text>
@@ -153,6 +156,12 @@ export default function ReceiptScreen() {
                   <Text style={styles.deliveryTitle}>
                     Delivery {index + 1} - {new Date(delivery.delivered_at).toLocaleString()}
                   </Text>
+                  {delivery.delivered_by ? (
+                    <Text style={styles.receiptSubtext}>Delivered By: {delivery.delivered_by}</Text>
+                  ) : null}
+                  {delivery.notes ? (
+                    <Text style={styles.receiptSubtext}>Notes: {delivery.notes}</Text>
+                  ) : null}
                   {itemsForDelivery.map((item, itemIndex) => (
                     <View key={`${delivery.id}-${itemIndex}`} style={styles.itemRow}>
                       <View style={styles.itemInfo}>
@@ -210,6 +219,9 @@ export default function ReceiptScreen() {
             )}
             {payment?.bank_name ? <Text style={styles.receiptText}>Bank: {payment.bank_name}</Text> : null}
             {payment?.cheque_no ? <Text style={styles.receiptText}>Cheque: {payment.cheque_no}</Text> : null}
+            {deliveryHistory[0]?.notes ? (
+              <Text style={styles.receiptText}>Notes: {deliveryHistory[0].notes}</Text>
+            ) : null}
           </View>
         )}
       </View>

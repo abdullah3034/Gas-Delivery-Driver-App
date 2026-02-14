@@ -48,14 +48,7 @@ export default function DashboardScreen() {
             </Text>
             <Text style={styles.heroSub}>Sunday, 14 Feb 2026</Text>
           </View>
-          <View style={styles.heroActions}>
-            <Pressable style={styles.heroButton}>
-              <Text style={styles.heroButtonText}>Sync</Text>
-            </Pressable>
-            <Pressable style={styles.heroButtonOutline}>
-              <Text style={styles.heroButtonOutlineText}>Visit</Text>
-            </Pressable>
-          </View>
+          <View style={styles.heroActions} />
         </View>
         <View style={styles.heroPill}>
           <Text style={styles.heroPillText}>Route: Kuliyapitiya</Text>

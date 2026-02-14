@@ -20,6 +20,7 @@ const MAPPING = {
   'chevron.right': 'chevron-right',
   'list.bullet': 'list',
   'shippingbox.fill': 'local-shipping',
+  'line.3.horizontal': 'menu',
 } as IconMapping;
 
 /**
